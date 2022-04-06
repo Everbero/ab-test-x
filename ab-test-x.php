@@ -4,6 +4,7 @@ defined( 'ABSPATH' ) || exit;
  * Plugin Name: AB Test X
  * Plugin URI: https://3xweb.site
  * Description: Permite a criação de campanhas de teste do tipo A/B
+ * Author: Douglas de Araújo
  * Author URI: https://3xweb.site/
  * Version: 1.0.0
  * Requires at least: 4.4
