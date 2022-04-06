@@ -95,7 +95,7 @@ function abTestX() {
              * Admin includes.
              */
             private function admin_includes() {                
-                include_once dirname( __FILE__ ) . '/abtest-custom-post-type.php';
+                include_once dirname( __FILE__ ) . '/src/ab-test-x-custom-post.php';
 
             }
 

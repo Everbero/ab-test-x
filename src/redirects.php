@@ -9,7 +9,7 @@ function redirect_if_any(){
     foreach ($campanhas as $key => $campanha) {
         $links_das_campanhas[] = [
             'ID' => $campanha->ID,
-            'link' => get_post_meta($campanha->ID, 'link_principal', true)
+            'link' => '/'.get_post_meta($campanha->ID, 'link_principal', true)
         ];
     }
 
@@ -17,7 +17,7 @@ function redirect_if_any(){
         if(isset($_SERVER["REDIRECT_URL"]) && ($_SERVER["REDIRECT_URL"] === $value['link'])){
             
             // debug, a qual página foi ligada
-            error_log('linked to'.$value['ID']."_".$value['link']);
+            // error_log('linked to'.$value['ID']."_".$value['link']);
 
             // se os parametros estiverem vazios, pego a lista de parametros padrao do post
             $parametros = ( !empty($_SERVER['QUERY_STRING']) ) 
