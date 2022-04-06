@@ -87,7 +87,7 @@ function woo_os_os_data() {
     echo '<fieldset class="campos_os">
     
     <label for="link_principal"><b>Link principal</b></label><br>
-    <span class="description">Este é o link da campanha, quando um usuário acessar uma página com este link, ele será redirecionado para uma das <b>páginas da campanha</b>. Você não precisa criar esta página, basta informar o link desejado para o redirecionamento:</span><br>'.get_site_url().'
+    <span class="description">Este é o link da campanha, quando um usuário acessar uma página com este link, ele será redirecionado para uma das <b>páginas da campanha</b>. Você não precisa criar esta página, basta informar o link desejado para o redirecionamento:</span><br>'.get_site_url().'/
     <input type="text" class="single-line" name="link_principal" value="'  . get_post_meta($post->ID, 'link_principal', true)  . '">
     <br><br>
 
