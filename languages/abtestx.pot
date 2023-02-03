@@ -1,0 +1,133 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: AB Test X\n"
+"POT-Creation-Date: 2022-04-07 16:11-0300\n"
+"PO-Revision-Date: 2022-04-07 15:11-0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: Poedit 3.0.1\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: ab-test-x.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
+"_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: src/ab-test-x-custom-post.php:12 src/ab-test-x-custom-post.php:14
+msgid "Campanhas A/B"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:13
+msgid "Campanha A/B"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:15
+msgid "Campanha pai"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:16
+msgid "Todas as campanhas"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:17
+msgid "Ver campanha"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:18
+msgid "Criar campanha"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:19
+msgid "Criar nova"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:20
+msgid "Editar campanha"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:21
+msgid "Atualizar campanha"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:22
+msgid "Pesquisar campanhas"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:23
+msgid "Campanha não encontrada"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:24
+msgid "Nenhuma campanha encontrada no lixo"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:30
+msgid "campanha"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:31
+msgid "Campanhas de teste AB"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:70
+msgid "Dados da Campanha"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:90
+msgid "Link principal"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:92
+msgid ""
+"Este é o link da campanha, quando um usuário acessar uma página com este "
+"link, ele será redirecionado para uma das <b>páginas da campanha</b>. Você "
+"não precisa criar esta página, basta informar o link desejado para o "
+"redirecionamento"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:99
+msgid "Páginas da campanha"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:101
+msgid "Estas são as páginas para onde redirecionaremos nossos usuários."
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:128
+msgid "Parametros Padrão"
+msgstr ""
+
+#: src/ab-test-x-custom-post.php:130
+msgid ""
+"Caso nosso usuário acesse o link diretamente estes são os parametros que "
+"passaremos adiante, os parametros podem ser qualquer coisa no padrão "
+"key=value, combinados por `&`"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "AB Test X"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://3xweb.site"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Permite a criação de campanhas de teste do tipo A/B"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Douglas de Araújo"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://3xweb.site/"
+msgstr ""
