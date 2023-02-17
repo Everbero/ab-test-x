@@ -239,3 +239,20 @@ function save_campanha_data($post_id, $post)
 }
 add_action('save_post', 'save_campanha_data', 1, 2);
 
+// Novos comandos para o post customizado
+add_filter( 'manage_campanhas_ab_posts_columns', 'set_custom_edit_ab_test' );
+function set_custom_edit_ab_test($columns) {
+    $columns['comandos'] = __( 'Comandos', 'ab_test_x' );
+    return $columns;
+}
+
+// Add the data to the custom columns for the book post type:
+add_action( 'manage_campanhas_ab_posts_custom_column' , 'custom_ab_test_column', 10, 2 );
+function custom_ab_test_column( $column, $post_id ) {
+    switch ( $column ) {
+        case 'comandos' :
+            
+                _e( '<button type="button" value='.$post_id.' class="zerador button blue"><span class="dashicons dashicons-trash"></span>Zerar relatórios</button>', 'ab_test_x' );
+            break;
+    }
+}

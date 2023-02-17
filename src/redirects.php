@@ -156,6 +156,7 @@ function redirect_if_any() {
             $cookie_data['page'] = $value['link'];
             $cookie_data['params'] = $parametros;
             $cookie_data['destination'] = $page_link;
+            $cookie_data['versao'] = $versao;
 
             //salvo o cookie no navegador
             setcookie('teste_ab', json_encode($cookie_data), $arr_cookie_options);
@@ -164,7 +165,7 @@ function redirect_if_any() {
             header('Location: ' . $page_link . '/?' . $parametros . '&versao=' . $versao);
 
             // finaliza a execução
-            // exit();
+            exit();
         }
         // se na url acessada estiver uma das páginas de obrigado
         if ($current_page === $value['ty_page']) {
@@ -179,6 +180,7 @@ function redirect_if_any() {
                 $cookie_data['campaing'] = $value['ID'];
 
                 update_report_data($cookie_data);
+                $versao = $cookie_data['versao'];
 
                 // apaga os cookies
                 foreach ($_COOKIE as $key => $value) {
@@ -187,17 +189,20 @@ function redirect_if_any() {
                         setcookie('teste_ab', null, -1, '/', $_SERVER['HTTP_HOST']);
                     }
                 }
-
-            } else {
-                // defino um novo hash para este acesso
-                $user_ip = get_visitor_ip();
-                $cookie_data['hash'] = md5($user_ip);
-                $cookie_data['ip'] = $user_ip;
-                $cookie_data['return_ip'] = $user_ip;
-                $cookie_data['campaing'] = $value['ID'];
-                // solicito a atualização
-                update_report_data($cookie_data);
-            }
+                header('Location: ' . $_SERVER["REQUEST_URI"] ."/".$_SERVER['QUERY_STRING']. '/?' . $cookie_data['params'] . '&versao=' . $versao);
+            } 
+            // em caso de acessos diretos, por enquanto desativado
+            // else {
+            //     // defino um novo hash para este acesso
+            //     $user_ip = get_visitor_ip();
+            //     $cookie_data['hash'] = md5($user_ip);
+            //     $cookie_data['ip'] = $user_ip;
+            //     $cookie_data['return_ip'] = $user_ip;
+            //     $cookie_data['campaing'] = $value['ID'];
+            //     // solicito a atualização
+            //     update_report_data($cookie_data);
+            //     error_log(json_encode($cookie_data));   
+            // }
         }
 
     }

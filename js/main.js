@@ -2,12 +2,16 @@ jQuery(function ($) {
   // multiple select with AJAX search
   $("#paginas_campanha").select2();
 
-  function retrieve_data(campanha = "") {
-    console.log("id campanha", campanha);
+  function retrieve_data(campanha = "", start = "", end = "") {
+    // console.log("id campanha", campanha);
     var query_data = {
       action: "get_ab_test_report_data",
       campanha: campanha,
+      start: start,
+      end: end
     };
+
+    
 
     jQuery.post(ajaxurl, query_data, function (response) {
       // return response;
@@ -15,7 +19,7 @@ jQuery(function ($) {
         //   console.log(response);
         results = [...JSON.parse(response)];
 
-        console.log(results);
+        // console.log(results);
         $("#report_list").DataTable({
           scrollX: true,
           responsive: true,
@@ -29,10 +33,10 @@ jQuery(function ($) {
               searchable: false,
             },
             {
-              targets: [3,8],
+              targets: [3, 8],
               data: "creation_time",
               render: function (data, type, row, meta) {
-                if (!data) return '--';
+                if (!data) return "--";
                 return new Date(data).toLocaleDateString("pt-br", {
                   weekday: "long",
                   year: "numeric",
@@ -70,22 +74,89 @@ jQuery(function ($) {
           return n.origin_ip !== null && n.return_ip !== null;
         });
         $(".conversoes_full .result").html(conversoes_full.length);
+        // antes contavam conversoes sem cookies
+        // conversoes_partial = jQuery.grep(results, function (n, i) {
+        //   return n.origin_ip === null && n.return_ip !== null;
+        // });
 
-        conversoes_partial = jQuery.grep(results, function (n, i) {
-          return n.origin_ip === null && n.return_ip !== null;
+        conversoes_partial = +((conversoes_full.length/acessos)*100).toFixed();
+        resultado_porcento = (conversoes_partial > 0) ? (conversoes_partial) : (0);
+        $(".conversoes_partial .result").html(resultado_porcento+"%");
+      }
+    });
+  }
+  function retrieve_page_data(campanha = "", start = "", end = "") {
+    // console.log("id campanha", campanha);
+    var query_data = {
+      action: "get_ab_page_report_data",
+      campanha: campanha,
+      start: start,
+      end: end
+    };
+
+    jQuery.post(ajaxurl, query_data, function (response) {
+      // return response;
+      if (response) {
+        // console.log(response);
+        results = [...JSON.parse(response)];
+
+        // console.log(results);
+        $(".resultados_paginas .result").empty();
+        results.map((value, index) => {
+
+          let porcentagem = parseInt(value.porcentagem).toFixed();
+          // porcentagem = parseInt(porcentagem).toFixed(2)
+
+          $(".resultados_paginas .result").append(`
+              <tr>
+                  <th scope="row">${value.pagina}</th>
+                  <td>${value.post_title}</td>
+                  <td>${value.acessos}</td>
+                  <td>${value.conversoes}</td>
+                  <td>${porcentagem}%</td>
+              </tr>
+          `);
         });
-        $(".conversoes_partial .result").html(conversoes_partial.length);
+
+        //
       }
     });
   }
   if ($("#reports").length) {
     retrieve_data();
+    retrieve_page_data();
 
-    $("#ab_filter_data").on("change", function () {
+    $("#ab_filter_data, #startDate, #endDate").on("change", function () {
       $("#report_list").DataTable().clear();
       $("#report_list").DataTable().destroy();
 
-      retrieve_data(this.value);
+      retrieve_data($('#ab_filter_data').val(), $('#startDate').val(), $('#endDate').val());
+      retrieve_page_data($('#ab_filter_data').val(), $('#startDate').val(), $('#endDate').val());
+    });
+  }
+  if ($(".zerador").length){
+    $(".zerador").on("click", function () {
+      let confirmation = prompt("Tem certeza que quer apagar os dados desta campanha? Para confirmar digite: "+ this.value);
+
+      if(confirmation === this.value){
+        var query_data = {
+          action: "delete_report_data",
+          campanha: this.value,
+        };
+    
+        jQuery.post(ajaxurl, query_data, function (response) {
+          // return response;
+          if (response) {
+            console.log(response);
+            alert(response + " registros apagados");
+            // results = [...JSON.parse(response)];
+
+            
+            //
+          }
+        });
+        
+      }
     });
   }
 });
