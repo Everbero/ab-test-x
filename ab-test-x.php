@@ -6,7 +6,7 @@ defined('ABSPATH') || exit;
  * Description: Permite a criação de campanhas de teste do tipo A/B
  * Author: Douglas de Araújo
  * Author URI: https://3xweb.site/
- * Version: 1.2.0
+ * Version: 1.2.1
  * Requires at least: 4.4
  * Tested up to: 5.9
  * Text Domain: abtestx
@@ -87,6 +87,7 @@ function abTestX() {
             }
             private function includes() {
                 include_once dirname(__FILE__) . '/src/redirects.php';
+                include_once dirname(__FILE__) . '/src/iptools/subnet-interpreter-class.php';
 
             }
             /**
@@ -96,6 +97,7 @@ function abTestX() {
                 include_once dirname(__FILE__) . '/src/ab-test-x-custom-post.php';
                 include_once dirname(__FILE__) . '/src/reports.php';
                 include_once dirname(__FILE__) . '/src/ajax-calls.php';
+                
 
             }
 
@@ -164,6 +166,7 @@ function ab_data_table_install() {
 		page varchar(255)  NULL,
 		params varchar(255) NULL,
         destination varchar(255) NULL,
+        referer varchar(255) NULL,
         return_ip varchar(50) NULL,
         return_time datetime NULL,
 		PRIMARY KEY  (id)

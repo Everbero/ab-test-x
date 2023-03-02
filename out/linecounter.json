@@ -1,0 +1,107 @@
+{
+    "extension": "linecounter",
+    "version": "0.2.7",
+    "workspace": "/home/douglas/DevKinsta/public/ab-test-x/wp-content/plugins/ab-test-x",
+    "linecount": [
+        {
+            "version": "0.2.7",
+            "counttime": "2023-02-20 20:05:55",
+            "filesum": 11,
+            "codesum": 1240,
+            "commentsum": 191,
+            "blanksum": 355,
+            "statistics": {
+                ".php": {
+                    "code": 863,
+                    "comment": 168,
+                    "blank": 160
+                },
+                ".pot": {
+                    "code": 81,
+                    "comment": 0,
+                    "blank": 52
+                },
+                ".po": {
+                    "code": 160,
+                    "comment": 0,
+                    "blank": 119
+                },
+                ".js": {
+                    "code": 136,
+                    "comment": 23,
+                    "blank": 24
+                }
+            },
+            "filelist": [
+                {
+                    "blank": 34,
+                    "code": 79,
+                    "comment": 53,
+                    "filename": "ab-test-x.php"
+                },
+                {
+                    "blank": 24,
+                    "code": 136,
+                    "comment": 23,
+                    "filename": "js/main.js"
+                },
+                {
+                    "filename": "languages/abtestx-en_US.mo",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 59,
+                    "code": 80,
+                    "comment": 0,
+                    "filename": "languages/abtestx-en_US.po"
+                },
+                {
+                    "filename": "languages/abtestx-pt_BR.mo",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 60,
+                    "code": 80,
+                    "comment": 0,
+                    "filename": "languages/abtestx-pt_BR.po"
+                },
+                {
+                    "blank": 52,
+                    "code": 81,
+                    "comment": 0,
+                    "filename": "languages/abtestx.pot"
+                },
+                {
+                    "blank": 41,
+                    "code": 179,
+                    "comment": 33,
+                    "filename": "src/ab-test-x-custom-post.php"
+                },
+                {
+                    "blank": 32,
+                    "code": 117,
+                    "comment": 5,
+                    "filename": "src/ajax-calls.php"
+                },
+                {
+                    "blank": 34,
+                    "code": 324,
+                    "comment": 58,
+                    "filename": "src/redirects.php"
+                },
+                {
+                    "blank": 19,
+                    "code": 164,
+                    "comment": 19,
+                    "filename": "src/reports.php"
+                }
+            ]
+        }
+    ]
+}

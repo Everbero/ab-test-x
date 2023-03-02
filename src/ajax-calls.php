@@ -8,9 +8,9 @@ function determine_query($post_data){
 
     if($_POST['start'] && (strlen($_POST['start']) > 0)){
         if($_POST['campanha']){
-            $query_h['start_date'] = "AND creation_time >= '". $_POST['start']. "'";
+            $query_h['start_date'] = "AND creation_time >= '". $_POST['start']. " 00:00:00'";
         }else{
-            $query_h['start_date'] = "creation_time >= '". $_POST['start']. "'";
+            $query_h['start_date'] = "creation_time >= '". $_POST['start']. " 00:00:00'";
         }
         
     }else{
@@ -19,9 +19,9 @@ function determine_query($post_data){
 
     if($_POST['end'] && (strlen($_POST['end']) > 0)){
         if($_POST['campanha']){
-            $query_h['end_date'] = "AND creation_time <= '" .$_POST['end']. "'";
+            $query_h['end_date'] = "AND creation_time <= '" .$_POST['end']. " 23:59:59'";
         }else{
-            $query_h['end_date'] = "creation_time <= '" .$_POST['end']. "'";
+            $query_h['end_date'] = "creation_time <= '" .$_POST['end']. " 23:59:59'";
         }
     }else{
         $query_h['end_date'] = '';
@@ -66,7 +66,7 @@ function get_ab_test_report_data() {
         SELECT post_id, post_title, cookie_hash, origin_ip, creation_time, page, params, destination, return_ip, return_time
         FROM $table_name
         LEFT JOIN $wpdb->posts
-        ON wp_ab_test_data.post_id = wp_posts.ID
+        ON $table_name.post_id = $wpdb->posts.ID
         $where_prefix
         $start_date
         $and_prefix
@@ -168,3 +168,43 @@ function delete_report_data(){
     
 }
 add_action('wp_ajax_delete_report_data', 'delete_report_data');
+
+function fix_report_data(){
+    if($_POST['campanha']){
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . 'ab_test_data';
+        $campanha = $_POST['campanha'];
+
+        $query = ("
+            SELECT id, params
+            FROM $table_name
+            WHERE post_id = $campanha;
+        ");
+
+        $results = $wpdb->get_results($query);
+
+        foreach ($results as $result) {
+            $result->params = urldecode($result->params);
+        }
+
+        foreach($results as $transform){
+            $update = $wpdb->update(
+                $table_name,
+                array(
+                    'params' => $transform->params,
+                ),
+                array(
+                    'id' => $transform->id
+                )
+            );
+        }
+
+        echo json_encode($results);
+        wp_die();
+    }else{
+        wp_die();
+    }
+    
+}
+add_action('wp_ajax_fix_report_data', 'fix_report_data');

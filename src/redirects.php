@@ -1,8 +1,49 @@
 <?php
 defined('ABSPATH') || exit;
+// Enter your code here, enjoy!
+/**
+ * Check if a given ip is in a network
+ * @param  string $ip    IP to check in IPV4 format eg. 127.0.0.1
+ * @param  string $range IP/CIDR netmask eg. 127.0.0.0/24, also 127.0.0.1 is accepted and /32 assumed
+ * @return boolean true if the ip is in this range / false if not.
+ */
+function ip_in_range($ip, $range) {
+    if (strpos($range, '/') == false) {
+        $range .= '/32';
+    }
+    // $range is in IP/CIDR format eg 127.0.0.1/24
+    list($range, $netmask) = explode('/', $range, 2);
+    $range_decimal = ip2long($range);
+    $ip_decimal = ip2long($ip);
+    $wildcard_decimal = pow(2, (32 - $netmask)) - 1;
+    $netmask_decimal = ~$wildcard_decimal;
+    return (($ip_decimal & $netmask_decimal) == ($range_decimal & $netmask_decimal));
+}
+
+function serial_ip_verification($ip_address, $fb_ips, $google_ips, $cloudfare_ips) {
+    foreach ($fb_ips as $ips) {
+        if (ip_in_range($ip_address, $ips)) {
+            return true;
+        }
+    }
+    foreach ($google_ips as $ips) {
+        if (ip_in_range($ip_address, $ips)) {
+            return true;
+        }
+    }
+    foreach ($cloudfare_ips as $ips) {
+        if (ip_in_range($ip_address, $ips)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 //função para pegar o ip do usuário
 function get_visitor_ip() {
-    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+        $ip = $_SERVER['HTTP_CF_CONNECTING_IP'];
+    } elseif (!empty($_SERVER['HTTP_CLIENT_IP'])) {
         //to check ip from share internet
         $ip = $_SERVER['HTTP_CLIENT_IP'];
     } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
@@ -19,6 +60,19 @@ function get_visitor_ip() {
         $ip = $matches[0][0];
     }
     return apply_filters('wpb_get_ip', $ip);
+}
+function generate_guidv4($data = null) {
+    // Generate 16 bytes (128 bits) of random data or use the data passed into the function.
+    $data = $data ?? random_bytes(16);
+    assert(strlen($data) == 16);
+
+    // Set version to 0100
+    $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+    // Set bits 6-7 to 10
+    $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+
+    // Output the 36 character UUID.
+    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
 }
 
 // função que verifica a existencia de um hash no DB
@@ -43,6 +97,7 @@ function save_report_data($cookie_data) {
     $table_name = $wpdb->prefix . 'ab_test_data';
 
     //gravo os dados do cookie gerado no banco de dados
+    //apenas se já não existir este registro
     if (!find_report_hash($cookie_data)) {
 
         $wpdb->insert(
@@ -53,8 +108,10 @@ function save_report_data($cookie_data) {
                 'origin_ip' => $cookie_data['ip'],
                 'creation_time' => current_time('mysql'),
                 'page' => $cookie_data['page'],
-                'params' => esc_html($cookie_data['params']),
+                'params' => urldecode(esc_html($cookie_data['params'])),
                 'destination' => $cookie_data['destination'],
+                'referer' => $cookie_data['referer'],
+                'server_data' => $cookie_data['server_vars']
             )
         );
     }
@@ -67,28 +124,33 @@ function update_report_data($cookie_data) {
     $table_name = $wpdb->prefix . 'ab_test_data';
     // verifico se já existe um registro para este hash
     if (!find_report_hash($cookie_data)) {
-        // se não houver crio um registro apenas com o retorno
-        $insert = $wpdb->insert(
-            $table_name,
-            array(
-                'post_id' => $cookie_data['campaing'],
-                'cookie_hash' => $cookie_data['hash'],
-                'return_ip' => $cookie_data['ip'],
-                'return_time' => current_time('mysql'),
-            )
-        );
-    // mas se houver atualizo o registro com os dados do retorno
-    } else {
-        $wpdb->update(
-            $table_name,
-            array(
-                'return_ip' => $cookie_data['return_ip'],
-                'return_time' => current_time('mysql')),
-            array('cookie_hash' => $cookie_data['hash'],
-            )
-        );
+        // se não exisitir salvo antes de atualizar com a conversão.
+        save_report_data($cookie_data);
     }
 
+    $wpdb->update(
+        $table_name,
+        array(
+            'return_ip' => $cookie_data['return_ip'],
+            'return_time' => current_time('mysql')),
+        array('cookie_hash' => $cookie_data['hash'],
+        )
+    );
+
+}
+// testa a versão do ip
+// retorna true para ipv4 e false para ipv6
+function check_ip_version($user_ip) {
+    //Check for IPv4
+    if (filter_var($user_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+        // error_log('found ipv4');
+        return true;
+    } 
+    //Check for IPv6
+    if (filter_var($user_ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+        // error_log('found ipv6');
+        return false;
+    }
 }
 // função que executa os redirecionamentos
 function redirect_if_any() {
@@ -100,7 +162,7 @@ function redirect_if_any() {
     // faço uma lista com todas as campanhas
     $campanhas = get_posts(['post_type' => 'campanhas_ab', 'fields' => 'ids']);
     // reservo a variável para os links de campanhas atuais
-    $links_das_campanhas;
+    $links_das_campanhas = [];
     // listo as campanhas por id da página e link da campanha
     foreach ($campanhas as $campanha) {
         $links_das_campanhas[] = [
@@ -134,7 +196,6 @@ function redirect_if_any() {
             $versao = get_post_field('post_name', get_post($paginas[$indice_aleatorio]));
             // pego o URL da página que eu sorteei
             $page_link = get_page_uri($paginas[$indice_aleatorio]);
-            
 
             //crio um cookie para este acesso
             $arr_cookie_options = array(
@@ -147,20 +208,35 @@ function redirect_if_any() {
             );
             //pego o ip do usuário
             $user_ip = get_visitor_ip();
-            $hash = md5($user_ip . current_time('mysql'));
-            //preparo os dados para o cookie
-            $cookie_data['campaing'] = $value['ID'];
-            $cookie_data['hash'] = $hash;
-            $cookie_data['ip'] = $user_ip;
-            $cookie_data['date'] = current_time('mysql');
-            $cookie_data['page'] = $value['link'];
-            $cookie_data['params'] = $parametros;
-            $cookie_data['destination'] = $page_link;
-            $cookie_data['versao'] = $versao;
+            // se o ip do usuário não estiver em uma lista favorecida,
+            //criamos o cookie e salvamos os dados, caso contrário apenas executa o teste
+            
+            
+            if(check_ip_version($user_ip)){
+                $ip_forbiden = (new subnetInterpreter)->serial_ipv4_verification($user_ip);
+            }else{
+                $ip_forbiden = (new subnetInterpreter)->serial_ipv6_verification($user_ip);
+            }
+            
+            if (!$ip_forbiden) {
 
-            //salvo o cookie no navegador
-            setcookie('teste_ab', json_encode($cookie_data), $arr_cookie_options);
-            save_report_data($cookie_data);
+                $hash = generate_guidv4();
+                //preparo os dados para o cookie
+                $cookie_data['campaing'] = $value['ID'];
+                $cookie_data['hash'] = $hash;
+                $cookie_data['ip'] = $user_ip;
+                $cookie_data['date'] = current_time('mysql');
+                $cookie_data['page'] = $value['link'];
+                $cookie_data['params'] = $parametros;
+                $cookie_data['destination'] = $page_link;
+                $cookie_data['versao'] = $versao;
+                $cookie_data['referer'] = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'no_ref';
+                $cookie_data['server_vars'] = json_encode($_SERVER);
+                //salvo o cookie no navegador
+                setcookie('teste_ab', json_encode($cookie_data), $arr_cookie_options);
+                save_report_data($cookie_data);
+            }
+
             // faço o redirecionamento repassando os parâmetros recebidos para a página sorteada
             header('Location: ' . $page_link . '/?' . $parametros . '&versao=' . $versao);
 
@@ -170,13 +246,25 @@ function redirect_if_any() {
         // se na url acessada estiver uma das páginas de obrigado
         if ($current_page === $value['ty_page']) {
             // error_log('ty to '.$value['ID']."_".$value['link']);
-            if (isset($_COOKIE["teste_ab"])) {
+
+            $user_ip = get_visitor_ip();
+            
+            
+            if(check_ip_version($user_ip)){
+                $ip_forbiden = (new subnetInterpreter)->serial_ipv4_verification($user_ip);
+            }else{
+                $ip_forbiden = (new subnetInterpreter)->serial_ipv6_verification($user_ip);
+            }
+            
+            // se existir o cookie e o ip não for proibido
+            
+            if (isset($_COOKIE["teste_ab"]) && !$ip_forbiden) {
 
                 // print_r($_COOKIE);
                 $cookie_data = json_decode(stripslashes($_COOKIE["teste_ab"]), true);
                 //pego o ip do usuário
 
-                $cookie_data['return_ip'] = get_visitor_ip();
+                $cookie_data['return_ip'] = $user_ip;
                 $cookie_data['campaing'] = $value['ID'];
 
                 update_report_data($cookie_data);
@@ -189,20 +277,8 @@ function redirect_if_any() {
                         setcookie('teste_ab', null, -1, '/', $_SERVER['HTTP_HOST']);
                     }
                 }
-                header('Location: ' . $_SERVER["REQUEST_URI"] ."/".$_SERVER['QUERY_STRING']. '/?' . $cookie_data['params'] . '&versao=' . $versao);
-            } 
-            // em caso de acessos diretos, por enquanto desativado
-            // else {
-            //     // defino um novo hash para este acesso
-            //     $user_ip = get_visitor_ip();
-            //     $cookie_data['hash'] = md5($user_ip);
-            //     $cookie_data['ip'] = $user_ip;
-            //     $cookie_data['return_ip'] = $user_ip;
-            //     $cookie_data['campaing'] = $value['ID'];
-            //     // solicito a atualização
-            //     update_report_data($cookie_data);
-            //     error_log(json_encode($cookie_data));   
-            // }
+                header('Location: ' . $_SERVER["REQUEST_URI"] . "/" . $_SERVER['QUERY_STRING'] . '/?' . $cookie_data['params'] . '&versao=' . $versao);
+            }
         }
 
     }

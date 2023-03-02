@@ -1,0 +1,31 @@
+===============================================================================
+EXTENSION NAME : linecounter
+EXTENSION VERSION : 0.2.7
+-------------------------------------------------------------------------------
+count time : 2023-02-20 20:05:55
+count workspace : /home/douglas/DevKinsta/public/ab-test-x/wp-content/plugins/ab-test-x
+total files : 11
+total code lines : 1240
+total comment lines : 191
+total blank lines : 355
+
+    statistics
+   |      extension|     total code|  total comment|    total blank|percent|
+   -------------------------------------------------------------------------
+   |           .php|            863|            168|            160|     70|
+   |           .pot|             81|              0|             52|    6.5|
+   |            .po|            160|              0|            119|     13|
+   |            .js|            136|             23|             24|     11|
+   -------------------------------------------------------------------------
+ab-test-x.php, code is 79, comment is 53, blank is 34.
+js/main.js, code is 136, comment is 23, blank is 24.
+languages/abtestx-en_US.mo, it is a binary file.
+languages/abtestx-en_US.po, code is 80, comment is 0, blank is 59.
+languages/abtestx-pt_BR.mo, it is a binary file.
+languages/abtestx-pt_BR.po, code is 80, comment is 0, blank is 60.
+languages/abtestx.pot, code is 81, comment is 0, blank is 52.
+src/ab-test-x-custom-post.php, code is 179, comment is 33, blank is 41.
+src/ajax-calls.php, code is 117, comment is 5, blank is 32.
+src/redirects.php, code is 324, comment is 58, blank is 34.
+src/reports.php, code is 164, comment is 19, blank is 19.
+===============================================================================

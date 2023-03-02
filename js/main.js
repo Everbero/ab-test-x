@@ -13,7 +13,7 @@ jQuery(function ($) {
 
     
 
-    jQuery.post(ajaxurl, query_data, function (response) {
+    $.post(ajaxurl, query_data, function (response) {
       // return response;
       if (response) {
         //   console.log(response);
@@ -21,6 +21,7 @@ jQuery(function ($) {
 
         // console.log(results);
         $("#report_list").DataTable({
+          destroy: true,
           scrollX: true,
           responsive: true,
           language: {
@@ -70,7 +71,7 @@ jQuery(function ($) {
         acessos = results.length;
         $(".acessos .result").html(acessos);
 
-        conversoes_full = jQuery.grep(results, function (n, i) {
+        conversoes_full = $.grep(results, function (n, i) {
           return n.origin_ip !== null && n.return_ip !== null;
         });
         $(".conversoes_full .result").html(conversoes_full.length);
@@ -79,7 +80,7 @@ jQuery(function ($) {
         //   return n.origin_ip === null && n.return_ip !== null;
         // });
 
-        conversoes_partial = +((conversoes_full.length/acessos)*100).toFixed();
+        conversoes_partial = +((conversoes_full.length/acessos)*100).toFixed(2);
         resultado_porcento = (conversoes_partial > 0) ? (conversoes_partial) : (0);
         $(".conversoes_partial .result").html(resultado_porcento+"%");
       }
@@ -94,7 +95,7 @@ jQuery(function ($) {
       end: end
     };
 
-    jQuery.post(ajaxurl, query_data, function (response) {
+    $.post(ajaxurl, query_data, function (response) {
       // return response;
       if (response) {
         // console.log(response);
@@ -104,7 +105,7 @@ jQuery(function ($) {
         $(".resultados_paginas .result").empty();
         results.map((value, index) => {
 
-          let porcentagem = parseInt(value.porcentagem).toFixed();
+          let porcentagem = parseFloat(value.porcentagem).toFixed(2);
           // porcentagem = parseInt(porcentagem).toFixed(2)
 
           $(".resultados_paginas .result").append(`
@@ -144,7 +145,7 @@ jQuery(function ($) {
           campanha: this.value,
         };
     
-        jQuery.post(ajaxurl, query_data, function (response) {
+        $.post(ajaxurl, query_data, function (response) {
           // return response;
           if (response) {
             console.log(response);
@@ -157,6 +158,26 @@ jQuery(function ($) {
         });
         
       }
+    });
+  }
+  if ($(".corretor").length){
+    $(".corretor").on("click", function () {
+      var query_data = {
+        action: "fix_report_data",
+        campanha: this.value,
+      };
+  
+      $.post(ajaxurl, query_data, function (response) {
+        // return response;
+        if (response) {
+          console.log(response);
+          //alert(response + " registros apagados");
+          // results = [...JSON.parse(response)];
+
+          
+          //
+        }
+      });
     });
   }
 });
