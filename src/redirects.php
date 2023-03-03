@@ -111,7 +111,6 @@ function save_report_data($cookie_data) {
                 'params' => urldecode(esc_html($cookie_data['params'])),
                 'destination' => $cookie_data['destination'],
                 'referer' => $cookie_data['referer'],
-                'server_data' => $cookie_data['server_vars']
             )
         );
     }
@@ -231,7 +230,6 @@ function redirect_if_any() {
                 $cookie_data['destination'] = $page_link;
                 $cookie_data['versao'] = $versao;
                 $cookie_data['referer'] = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'no_ref';
-                $cookie_data['server_vars'] = json_encode($_SERVER);
                 //salvo o cookie no navegador
                 setcookie('teste_ab', json_encode($cookie_data), $arr_cookie_options);
                 save_report_data($cookie_data);
