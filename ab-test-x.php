@@ -6,7 +6,7 @@ defined('ABSPATH') || exit;
  * Description: Permite a criação de campanhas de teste do tipo A/B
  * Author: Douglas de Araújo
  * Author URI: https://3xweb.site/
- * Version: 1.2.1
+ * Version: 1.2.2
  * Requires at least: 4.4
  * Tested up to: 5.9
  * Text Domain: abtestx
@@ -163,7 +163,7 @@ function ab_data_table_install() {
         cookie_hash varchar(255)  NULL,
         origin_ip varchar(50) NULL,
 		creation_time datetime NULL, /*DEFAULT '0000-00-00 00:00:00'*/
-		page varchar(255)  NULL,
+		page_is varchar(255)  NULL,
 		params varchar(255) NULL,
         destination varchar(255) NULL,
         referer varchar(255) NULL,

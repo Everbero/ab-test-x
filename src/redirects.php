@@ -107,7 +107,7 @@ function save_report_data($cookie_data) {
                 'cookie_hash' => $cookie_data['hash'],
                 'origin_ip' => $cookie_data['ip'],
                 'creation_time' => current_time('mysql'),
-                'page' => $cookie_data['page'],
+                'page_is' => $cookie_data['page_is'],
                 'params' => urldecode(esc_html($cookie_data['params'])),
                 'destination' => $cookie_data['destination'],
                 'referer' => $cookie_data['referer'],
@@ -159,7 +159,7 @@ function redirect_if_any() {
     }
 
     // faço uma lista com todas as campanhas
-    $campanhas = get_posts(['post_type' => 'campanhas_ab', 'fields' => 'ids']);
+    $campanhas = get_posts(['post_type' => 'campanhas_ab', 'fields' => 'ids', 'numberposts' => -1,]);
     // reservo a variável para os links de campanhas atuais
     $links_das_campanhas = [];
     // listo as campanhas por id da página e link da campanha
@@ -173,7 +173,7 @@ function redirect_if_any() {
     //armazeno a página atual em uma variável
     $current_page = explode('?', str_replace('/', '', $_SERVER["REQUEST_URI"]))[0];
 
-    //error_log("posts is: " . json_encode($campanhas) . " message is: " . json_encode($links_das_campanhas) . " redirect is: " . json_encode($_SERVER["REQUEST_URI"]) . " user ip is: " . get_visitor_ip());
+    // error_log("posts is: " . json_encode($campanhas) . " message is: " . json_encode($links_das_campanhas) . " redirect is: " . json_encode($_SERVER["REQUEST_URI"]) . " user ip is: " . get_visitor_ip());
     // começo a procurar se o url acessado está em alguma das campanhas
     foreach ($links_das_campanhas as $key => $value) {
         // se na url acessada estiver um dos links principais de qualquer campanha
@@ -225,7 +225,7 @@ function redirect_if_any() {
                 $cookie_data['hash'] = $hash;
                 $cookie_data['ip'] = $user_ip;
                 $cookie_data['date'] = current_time('mysql');
-                $cookie_data['page'] = $value['link'];
+                $cookie_data['page_is'] = $value['link'];
                 $cookie_data['params'] = $parametros;
                 $cookie_data['destination'] = $page_link;
                 $cookie_data['versao'] = $versao;

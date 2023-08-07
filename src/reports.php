@@ -75,6 +75,7 @@ td {
 
                     $pages = get_posts(array(
                         'post_type' => 'campanhas_ab',
+                        'numberposts' => -1,
                         'sort_order' => 'ASC',
                         'sort_column' => 'post_title',
                     ));

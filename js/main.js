@@ -57,7 +57,7 @@ jQuery(function ($) {
             { data: "cookie_hash" },
             { data: "origin_ip" },
             { data: "creation_time" },
-            { data: "page" },
+            { data: "page_is" },
             { data: "params" },
             { data: "destination" },
             { data: "return_ip" },

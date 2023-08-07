@@ -53,7 +53,7 @@ function get_ab_test_report_data() {
         $filter_post = $_POST['campanha'];
 
         $result = $wpdb->get_results("
-        SELECT post_id, post_title, cookie_hash, origin_ip, creation_time, page, params, destination, return_ip, return_time
+        SELECT post_id, post_title, cookie_hash, origin_ip, creation_time, page_is, params, destination, return_ip, return_time
         FROM $table_name
         LEFT JOIN $wpdb->posts
         ON $table_name.post_id = $wpdb->posts.ID
@@ -63,7 +63,7 @@ function get_ab_test_report_data() {
     ");
     } else {
         $result = $wpdb->get_results("
-        SELECT post_id, post_title, cookie_hash, origin_ip, creation_time, page, params, destination, return_ip, return_time
+        SELECT post_id, post_title, cookie_hash, origin_ip, creation_time, page_is, params, destination, return_ip, return_time
         FROM $table_name
         LEFT JOIN $wpdb->posts
         ON $table_name.post_id = $wpdb->posts.ID
