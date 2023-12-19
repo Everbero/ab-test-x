@@ -1,5 +1,4 @@
 <?php
-
 /*
  * ip_in_range.php - Function to determine if an IP is located in a
  *                   specific range as specified via several alternative
