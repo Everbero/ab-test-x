@@ -8,10 +8,8 @@ jQuery(function ($) {
       action: "get_ab_test_report_data",
       campanha: campanha,
       start: start,
-      end: end
+      end: end,
     };
-
-    
 
     $.post(ajaxurl, query_data, function (response) {
       // return response;
@@ -80,9 +78,12 @@ jQuery(function ($) {
         //   return n.origin_ip === null && n.return_ip !== null;
         // });
 
-        conversoes_partial = +((conversoes_full.length/acessos)*100).toFixed(2);
-        resultado_porcento = (conversoes_partial > 0) ? (conversoes_partial) : (0);
-        $(".conversoes_partial .result").html(resultado_porcento+"%");
+        conversoes_partial = +(
+          (conversoes_full.length / acessos) *
+          100
+        ).toFixed(2);
+        resultado_porcento = conversoes_partial > 0 ? conversoes_partial : 0;
+        $(".conversoes_partial .result").html(resultado_porcento + "%");
       }
     });
   }
@@ -92,7 +93,7 @@ jQuery(function ($) {
       action: "get_ab_page_report_data",
       campanha: campanha,
       start: start,
-      end: end
+      end: end,
     };
 
     $.post(ajaxurl, query_data, function (response) {
@@ -104,7 +105,6 @@ jQuery(function ($) {
         // console.log(results);
         $(".resultados_paginas .result").empty();
         results.map((value, index) => {
-
           let porcentagem = parseFloat(value.porcentagem).toFixed(2);
           // porcentagem = parseInt(porcentagem).toFixed(2)
 
@@ -131,20 +131,31 @@ jQuery(function ($) {
       $("#report_list").DataTable().clear();
       $("#report_list").DataTable().destroy();
 
-      retrieve_data($('#ab_filter_data').val(), $('#startDate').val(), $('#endDate').val());
-      retrieve_page_data($('#ab_filter_data').val(), $('#startDate').val(), $('#endDate').val());
+      retrieve_data(
+        $("#ab_filter_data").val(),
+        $("#startDate").val(),
+        $("#endDate").val()
+      );
+      retrieve_page_data(
+        $("#ab_filter_data").val(),
+        $("#startDate").val(),
+        $("#endDate").val()
+      );
     });
   }
-  if ($(".zerador").length){
+  if ($(".zerador").length) {
     $(".zerador").on("click", function () {
-      let confirmation = prompt("Tem certeza que quer apagar os dados desta campanha? Para confirmar digite: "+ this.value);
+      let confirmation = prompt(
+        "Tem certeza que quer apagar os dados desta campanha? Para confirmar digite: " +
+          this.value
+      );
 
-      if(confirmation === this.value){
+      if (confirmation === this.value) {
         var query_data = {
           action: "delete_report_data",
           campanha: this.value,
         };
-    
+
         $.post(ajaxurl, query_data, function (response) {
           // return response;
           if (response) {
@@ -152,21 +163,19 @@ jQuery(function ($) {
             alert(response + " registros apagados");
             // results = [...JSON.parse(response)];
 
-            
             //
           }
         });
-        
       }
     });
   }
-  if ($(".corretor").length){
+  if ($(".corretor").length) {
     $(".corretor").on("click", function () {
       var query_data = {
         action: "fix_report_data",
         campanha: this.value,
       };
-  
+
       $.post(ajaxurl, query_data, function (response) {
         // return response;
         if (response) {
@@ -174,7 +183,6 @@ jQuery(function ($) {
           //alert(response + " registros apagados");
           // results = [...JSON.parse(response)];
 
-          
           //
         }
       });
