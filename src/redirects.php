@@ -298,49 +298,6 @@ function redirect_if_any()
             // Obtém o URL da página sorteada
             $page_link = get_page_uri($paginas[$indice_aleatorio]);
 
-            // Cria opções para o cookie
-            $arr_cookie_options = array(
-                'expires' => time() + 60 * 60 * 24 * 30,
-                'path' => '/',
-                'domain' => $_SERVER['HTTP_HOST'], // Ponto inicial para compatibilidade ou use subdomínio
-                'secure' => true, // ou false
-                'httponly' => true, // ou false
-                'samesite' => 'None', // None || Lax  || Strict
-            );
-
-            // Obtém o endereço IP do usuário
-            $user_ip = get_visitor_ip();
-
-            // Verifica se o endereço IP do usuário não está em uma lista proibida
-            if (check_ip_version($user_ip)) {
-                $ip_forbidden = (new subnetInterpreter)->serial_ipv4_verification($user_ip);
-            } else {
-                $ip_forbidden = (new subnetInterpreter)->serial_ipv6_verification($user_ip);
-            }
-
-            // Se o IP do usuário não estiver proibido
-            if (!$ip_forbidden) {
-                // Gera um hash para o cookie
-                $hash = generate_guidv4();
-
-                // Prepara os dados para o cookie
-                $cookie_data['campaing'] = $value['ID'];
-                $cookie_data['hash'] = $hash;
-                $cookie_data['ip'] = $user_ip;
-                $cookie_data['date'] = current_time('mysql');
-                $cookie_data['page_is'] = $value['link'];
-                $cookie_data['params'] = $parametros;
-                $cookie_data['destination'] = $page_link;
-                $cookie_data['versao'] = $versao;
-                $cookie_data['referer'] = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'no_ref';
-
-                // Salva o cookie no navegador do usuário
-                setcookie('teste_ab', json_encode($cookie_data), $arr_cookie_options);
-
-                // Salva os dados do cookie no banco de dados
-                save_report_data($cookie_data);
-            }
-
             // Redireciona para a página sorteada, repassando os parâmetros recebidos
             header('Location: ' . $page_link . '/?' . $parametros . '&versao=' . $versao);
 
