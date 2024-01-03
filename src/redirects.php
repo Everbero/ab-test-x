@@ -1,9 +1,11 @@
 <?php
+// @todo criar classes para cada função
+// @todo criar um namespace para as classes
 // Garante que o código não seja executado diretamente fora do WordPress
 defined('ABSPATH') || exit;
 /**
  * Verifica se um endereço IP está dentro de um determinado intervalo CIDR.
- *
+ * @deprecated version 1.2.3
  * @param string $ip O endereço IP a ser verificado.
  * @param string $range O intervalo CIDR no formato IP/CIDR (eg. 127.0.0.1/24).
  * @return bool Retorna true se o endereço IP estiver dentro do intervalo especificado, caso contrário, retorna false.
@@ -32,7 +34,7 @@ function ip_in_range($ip, $range)
 
 /**
  * Verifica se um endereço IP está dentro dos intervalos de IPs do Facebook, Google ou Cloudflare.
- *
+ * @deprecated version 1.2.3
  * @param string $ip_address O endereço IP a ser verificado.
  * @param array $fb_ips Um array contendo intervalos de IPs associados ao Facebook.
  * @param array $google_ips Um array contendo intervalos de IPs associados ao Google.
@@ -74,7 +76,7 @@ function serial_ip_verification($ip_address, $fb_ips, $google_ips, $cloudfare_ip
  *
  * A função verifica várias fontes possíveis para encontrar o endereço IP do visitante,
  * incluindo proxies e cabeçalhos HTTP especiais.
- *
+ * @todo mover para iptools
  * @return string O endereço IP do visitante.
  */
 function get_visitor_ip()
@@ -111,7 +113,7 @@ function get_visitor_ip()
 
 /**
  * Gera um identificador único universal (UUID) versão 4.
- *
+ * @todo mover para uma classe de hashing
  * @param string|null $data Dados para gerar o UUID, se não fornecido, gera dados aleatórios.
  * @return string Um UUID versão 4 no formato de string.
  */
@@ -132,7 +134,7 @@ function generate_guidv4($data = null)
 
 /**
  * Procura um registro no banco de dados associado a um determinado hash de cookie.
- *
+ * @todo mover para uma classe de relatório
  * @param array $cookie_data Os dados do cookie contendo o hash a ser procurado.
  * @return array|null Retorna os resultados da busca no banco de dados ou null se não houver correspondência.
  */
@@ -156,7 +158,7 @@ function find_report_hash($cookie_data)
 }
 /**
  * Salva os dados do relatório no banco de dados, se o registro ainda não existir.
- *
+ * @todo mover para uma classe de relatório
  * @param array $cookie_data Os dados do cookie a serem salvos no banco de dados.
  * @return void
  */
@@ -187,7 +189,7 @@ function save_report_data($cookie_data)
 /**
  * Atualiza os dados do relatório no banco de dados com informações de retorno, se o registro existir.
  * Caso contrário, salva os dados antes de atualizar.
- *
+ * @todo mover para uma classe de relatório
  * @param array $cookie_data Os dados do cookie a serem atualizados no banco de dados.
  * @return void
  */
@@ -216,7 +218,7 @@ function update_report_data($cookie_data)
 }
 /**
  * Verifica a versão do endereço IP fornecido (IPv4 ou IPv6).
- *
+ * @todo mover para iptools
  * @param string $user_ip O endereço IP a ser verificado.
  * @return bool|null Retorna true se for um endereço IPv4, false se for IPv6 ou null se não for nenhum dos dois.
  */
